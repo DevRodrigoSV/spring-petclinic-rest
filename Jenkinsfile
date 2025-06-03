@@ -35,7 +35,7 @@ pipeline {
                 success {
                     //recordCoverage(tools: [[parser: 'JACOCO']])
                     discoverReferenceBuilds()
-                    recordCoverge(
+                    recordCoverage(
                         tools: [[parser: 'JACOCO']],
                         sourceCodeRetention: 'EVERY_BUILD',
                         qualityGates: [
