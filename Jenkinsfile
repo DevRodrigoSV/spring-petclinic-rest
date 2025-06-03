@@ -8,6 +8,9 @@ pipeline {
     //tools {
     //    maven 'maven3.9.9'
     //}
+    triggers {
+        cron('* * * * *')
+    }
     stages {
 //         stage('Checkout SCM') {
 //             steps {
