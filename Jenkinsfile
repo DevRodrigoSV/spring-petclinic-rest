@@ -33,14 +33,14 @@ pipeline {
             }
             post {
                 success {
-                    //recordCoverage(tools: [[parser: 'JACOCO']])
-                    discoverReferenceBuilds()
+                    // recordCoverage(tools: [[parser: 'JACOCO']])
+                    discoverReferenceBuild()
                     recordCoverage(
                         tools: [[parser: 'JACOCO']],
                         sourceCodeRetention: 'EVERY_BUILD',
                         qualityGates: [
-                            [threshold: 30.0, metric: 'LINE'],
-                            [threshold: 30.0, metric: 'BRANCH']
+                            [threshold: 80.0, metric: 'LINE', criticality: 'FAILURE'],
+                            [threshold: 60.0, metric: 'BRANCH', criticality: 'FAILURE']
                         ]
                     )
                 }
