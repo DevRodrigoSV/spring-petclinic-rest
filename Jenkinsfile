@@ -1,8 +1,13 @@
 pipeline {
-    agent any
-    tools {
-        maven 'maven3.9.9'
+    //agent any
+    agent {
+        docker {
+            image 'maven:3.8.8-eclipse-temurin-17-alpine'
+        }
     }
+    //tools {
+    //    maven 'maven3.9.9'
+    //}
     stages {
 //         stage('Checkout SCM') {
 //             steps {
