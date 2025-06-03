@@ -33,7 +33,15 @@ pipeline {
             }
             post {
                 success {
-                    recordCoverage(tools: [[parser: 'JACOCO']])
+                    //recordCoverage(tools: [[parser: 'JACOCO']])
+                    recordJacoco(
+                        tools: [[parser: 'JACOCO']],
+                        sourceCodeRetention: 'EVERY_BUILD',
+                        qualityGates: [
+                            [threshold: 30.0, metric: 'LINE'],
+                            [threshold: 30.0, metric: 'BRANCH']
+                        ]
+                    )
                 }
             }
         }
