@@ -13,7 +13,7 @@ pipeline {
         githubPush()
     }
     stages {
-//         stage('Checkout SCM') {
+        //         stage('Checkout SCM') {
 //             steps {
 //                 git branch: 'master', url: 'https://github.com/DevRodrigoSV/spring-petclinic-rest.git'
 //             }
@@ -71,7 +71,7 @@ pipeline {
                     }
                 }
             }
-        }
+         }
     }
     post {
         success {
