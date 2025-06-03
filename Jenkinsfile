@@ -9,7 +9,8 @@ pipeline {
     //    maven 'maven3.9.9'
     //}
     triggers {
-        cron('* * * * *')
+        //cron('* * * * *')
+        githubPush()
     }
     stages {
 //         stage('Checkout SCM') {
