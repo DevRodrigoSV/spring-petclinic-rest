@@ -64,7 +64,11 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     sh 'env | sort'
-                    sh 'mvn sonar:sonar'
+                    script {
+                        def branchName = GIT_BRANCH.replaceFirst('^origin/', '')
+                        println "Branch name: ${branchName}"
+                        sh "mvn sonar:sonar -B -ntp -Dsonar.branch.name=${branchName}"
+                    }
                 }
             }
         }
