@@ -68,7 +68,7 @@ pipeline {
                         def branchName = GIT_BRANCH.replaceFirst('^origin/', '')
                         println "Branch name: ${branchName}"
                         //sh "mvn sonar:sonar -B -ntp -Dsonar.branch.name=${branchName}"
-                        sh "mvn sonar:sonar -B -ntp"
+                        sh "mvn sonar:sonar -B -ntp -Dsonar.branch.name=${branchName}"
                     }
                 }
             }
