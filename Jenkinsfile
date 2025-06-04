@@ -61,7 +61,6 @@ pipeline {
                 sh 'mvn clean package -DskipTests -B -ntp'
             }
         }
-
         //stage('SonarQube') {
         //    steps {
         //        withSonarQubeEnv('sonarqube') {
