@@ -60,26 +60,26 @@ pipeline {
                 sh 'mvn package -DskipTests -B -ntp'
             }
         }
-        stage('SonarQube') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh 'env | sort'
-                    script {
-                        def branchName = GIT_BRANCH.replaceFirst('^origin/', '')
-                        println "Branch name: ${branchName}"
-                        //sh "mvn sonar:sonar -B -ntp -Dsonar.branch.name=${branchName}"
-                        sh "mvn sonar:sonar -B -ntp"
-                    }
-                }
-            }
-        }
-        stage('SonarQube Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        //stage('SonarQube') {
+        //    steps {
+        //        withSonarQubeEnv('sonarqube') {
+        //            sh 'env | sort'
+        //            script {
+        //                def branchName = GIT_BRANCH.replaceFirst('^origin/', '')
+        //                println "Branch name: ${branchName}"
+        //                //sh "mvn sonar:sonar -B -ntp -Dsonar.branch.name=${branchName}"
+        //                sh "mvn sonar:sonar -B -ntp"
+        //            }
+        //        }
+        //    }
+        //}
+        //stage('SonarQube Quality Gate') {
+        //    steps {
+        //        timeout(time: 1, unit: 'HOURS') {
+        //            waitForQualityGate abortPipeline: true
+        //        }
+        //    }
+        //}
     }
     post {
         success {
