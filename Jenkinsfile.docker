@@ -18,12 +18,32 @@ pipeline {
 
                     // Forma 1: Usando variable global docker
 
-                     def pom = readMavenPom file: 'pom.xml'
-                     def app = docker.build("rmsvcursos/${pom.artifactId}:${pom.version}")
+                    // def pom = readMavenPom file: 'pom.xml'
+                    // def app = docker.build("rmsvcursos/${pom.artifactId}:${pom.version}")
 
-                     docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub-credentials') {
-                         app.push()
-                         app.push('latest')
+                    // docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub-credentials') {
+                    //     app.push()
+                    //     app.push('latest')
+                    // }
+
+                    // Forma 2: Usando buildx
+
+                    def pom = readMavenPom file: 'pom.xml'
+
+                    sh 'docker run --privileged --rm tonistiigi/binfmt --install all'
+                    sh 'docker buildx create --use'
+                    sh 'docker buildx inspect --bootstrap'
+
+                    sh 'docker buildx version'
+
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        sh """
+                            docker buildx build \
+                                -t rmsvcursos/${pom.artifactId}:${pom.version} \
+                                -t rmsvcursos/${pom.artifactId}:latest \
+                                --platform linux/amd64,linux/arm64 --push .
+                        """
                     }
                 }
             }
