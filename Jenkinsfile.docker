@@ -15,21 +15,23 @@ pipeline {
             agent any
             steps{
                 script {
-                    // Forma 1: Usando variable global docker
-                    def pom = readMavenPom file: 'pom.xml'
-                    def app = docker.build("rmsvcursos/${pom.artifactId}:${pom.version}")
 
-                    docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub-credentials') {
-                        app.push()
-                        app.push('latest')
+                    // Forma 1: Usando variable global docker
+
+                     def pom = readMavenPom file: 'pom.xml'
+                     def app = docker.build("rmsvcursos/${pom.artifactId}:${pom.version}")
+
+                     docker.withRegistry('https://registry.hub.docker.com/', 'dockerhub-credentials') {
+                         app.push()
+                         app.push('latest')
                     }
                 }
             }
         }
     }
-    //post {
-    //    always {
-    //        cleanWs()
-    //    }
-    //}
+    // post {
+    //     always {
+    //         cleanWs()
+    //     }
+    // }
 }
