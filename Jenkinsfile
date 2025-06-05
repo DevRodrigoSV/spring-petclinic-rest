@@ -102,66 +102,66 @@ pipeline {
         //        }
         //    }
         //}
-        stage('Artifactory') {
-            steps {
-                script {
-                    // Forma 1: Usando rtMaven (Más lento por que vuelve hacer un clean install)
-                    //sh 'env | sort'
-                    //env.MAVEN_HOME = '/usr/share/maven'
-                    //
-                    //def snapshot = 'spring-petclinic-rest-snapshot'
-                    //def release = 'spring-petclinic-rest-release'
-                    //
-                    //def server = Artifactory.server 'artifactory'
-                    //def rtMaven = Artifactory.newMavenBuild()
-                    //rtMaven.deployer server: server, snapshotRepo: snapshot, releaseRepo: release
-                    //def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests -B -ntp'
-                    //
-                    //server.publishBuildInfo buildInfo
-
-                    // Forma 2: FileSpec (Más eficiente)
-                    def server = Artifactory.server 'artifactory'
-                    def targetRepo = 'spring-petclinic-rest-release'
-
-                    def pom = readMavenPom file: 'pom.xml'
-                    println pom.groupId
-                    def groupIdPath = pom.groupId.replaceAll("\\.", "/")
-                    println groupIdPath
-
-                    def uploadSpec = """
-                        {
-                            "files": [
-                                {
-                                    "pattern": "target/.*.jar",
-                                    "target": "${targetRepo}/${groupIdPath}/${pom.artifactId}/${pom.version}/",
-                                    "regexp": "true",
-                                    "props": "build.url=${RUN_DISPLAY_URL};build.user=${USER}"
-                                }
-                            ]
-                        }
-                    """
-                    server.upload spec: uploadSpec
-                }
-            }
-        }
-        stage('Nexus') {
-            steps {
-                script {
-                    def pom = readMavenPom file: 'pom.xml'
-                    println pom
-
-                    nexusPublisher nexusInstanceId: 'nexus',
-                    nexusRepositoryId: 'spring-petclinic-rest-release',
-                    packages: [[$class: 'MavenPackage',
-                    mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"]],
-                    mavenCoordinate: [
-                    groupId: "${pom.groupId}",
-                    artifactId: "${pom.artifactId}",
-                    packaging: "${pom.packaging}",
-                    version: "${pom.version}"]]]
-                }
-            }
-        }
+        //stage('Artifactory') {
+        //    steps {
+        //        script {
+        //            // Forma 1: Usando rtMaven (Más lento por que vuelve hacer un clean install)
+        //            //sh 'env | sort'
+        //            //env.MAVEN_HOME = '/usr/share/maven'
+        //            //
+        //            //def snapshot = 'spring-petclinic-rest-snapshot'
+        //            //def release = 'spring-petclinic-rest-release'
+        //            //
+        //            //def server = Artifactory.server 'artifactory'
+        //            //def rtMaven = Artifactory.newMavenBuild()
+        //            //rtMaven.deployer server: server, snapshotRepo: snapshot, releaseRepo: release
+        //            //def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install -DskipTests -B -ntp'
+        //            //
+        //            //server.publishBuildInfo buildInfo
+        //
+        //            // Forma 2: FileSpec (Más eficiente)
+        //            def server = Artifactory.server 'artifactory'
+        //            def targetRepo = 'spring-petclinic-rest-release'
+        //
+        //            def pom = readMavenPom file: 'pom.xml'
+        //            println pom.groupId
+        //            def groupIdPath = pom.groupId.replaceAll("\\.", "/")
+        //            println groupIdPath
+        //
+        //            def uploadSpec = """
+        //                {
+        //                    "files": [
+        //                        {
+        //                            "pattern": "target/.*.jar",
+        //                            "target": "${targetRepo}/${groupIdPath}/${pom.artifactId}/${pom.version}/",
+        //                            "regexp": "true",
+        //                            "props": "build.url=${RUN_DISPLAY_URL};build.user=${USER}"
+        //                        }
+        //                    ]
+        //                }
+        //            """
+        //            server.upload spec: uploadSpec
+        //        }
+        //    }
+        //}
+        //stage('Nexus') {
+        //    steps {
+        //        script {
+        //            def pom = readMavenPom file: 'pom.xml'
+        //            println pom
+        //
+        //            nexusPublisher nexusInstanceId: 'nexus',
+        //            nexusRepositoryId: 'spring-petclinic-rest-release',
+        //            packages: [[$class: 'MavenPackage',
+        //            mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"]],
+        //            mavenCoordinate: [
+        //            groupId: "${pom.groupId}",
+        //            artifactId: "${pom.artifactId}",
+        //            packaging: "${pom.packaging}",
+        //            version: "${pom.version}"]]]
+        //        }
+        //    }
+        //}
     }
     post {
         success {
