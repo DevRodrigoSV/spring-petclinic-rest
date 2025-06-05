@@ -105,7 +105,7 @@ pipeline {
         stage('Artifactory') {
             steps {
                 script {
-                    // Forma 1: Usando rtMaven
+                    // Forma 1: Usando rtMaven (Más lento por que vuelve hacer un clean install)
                     //sh 'env | sort'
                     //env.MAVEN_HOME = '/usr/share/maven'
                     //
@@ -119,7 +119,7 @@ pipeline {
                     //
                     //server.publishBuildInfo buildInfo
 
-                    // Forma 2: FileSpec
+                    // Forma 2: FileSpec (Más eficiente)
                     def server = Artifactory.server 'artifactory'
                     def targetRepo = 'spring-petclinic-rest-release'
 
@@ -141,6 +141,24 @@ pipeline {
                         }
                     """
                     server.upload spec: uploadSpec
+                }
+            }
+        }
+        stage('Nexus') {
+            steps {
+                script {
+                    def pom = readMavenPom file: 'pom.xml'
+                    println pom
+
+                    nexusPublisher nexusInstanceId: 'nexus',
+                    nexusRepositoryId: 'spring-petclinic-rest-release',
+                    packages: [[$class: 'MavenPackage',
+                    mavenAssetList: [[classifier: '', extension: '', filePath: "target/${pom.artifactId}-${pom.version}.${pom.packaging}"]],
+                    mavenCoordinate: [
+                    groupId: "${pom.groupId}",
+                    artifactId: "${pom.artifactId}",
+                    packaging: "${pom.packaging}",
+                    version: "${pom.version}"]]]
                 }
             }
         }
